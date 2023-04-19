@@ -828,6 +828,7 @@ indf1
 indf2
 int0
 int0_bit
+int0_interrupt
 int0e
 int0e_bit
 int0f
@@ -874,7 +875,6 @@ intedg1
 intedg1_bit
 intedg2
 intedg2_bit
-interrupt
 intsrc
 intsrc_bit
 iocb
@@ -1004,6 +1004,7 @@ late1
 late1_bit
 late2
 late2_bit
+led_current_mode
 lfiofs
 lfiofs_bit
 load_tmr0
@@ -2035,6 +2036,7 @@ tblptrl
 tblptru
 tgen
 tgen_bit
+timer0_interrupt
 tmr0h
 tmr0ie
 tmr0ie_bit

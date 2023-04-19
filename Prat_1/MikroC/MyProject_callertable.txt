@@ -1,2 +1,5 @@
 main
-interrupt
+	__CC2DW
+	load_tmr0
+Timer0_Interrupt
+Int0_Interrupt
