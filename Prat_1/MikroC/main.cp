@@ -1,5 +1,5 @@
-#line 1 "C:/Users/henri/Documents/2023_1/Ap_Micros_1_Monitoria/Prat_1/MikroC/main.c"
-#line 19 "C:/Users/henri/Documents/2023_1/Ap_Micros_1_Monitoria/Prat_1/MikroC/main.c"
+#line 1 "C:/Users/Henrique/usp/Monitoria_Ap_Micros_1/micros-1-monitoria/Prat_1/MikroC/main.c"
+#line 19 "C:/Users/Henrique/usp/Monitoria_Ap_Micros_1/micros-1-monitoria/Prat_1/MikroC/main.c"
 typedef enum {
  SLOW_CNT,
  FAST_CNT,
@@ -9,10 +9,23 @@ typedef enum {
  LED_OFF,
  LED_ON,
 } led_mode_t;
+#line 41 "C:/Users/Henrique/usp/Monitoria_Ap_Micros_1/micros-1-monitoria/Prat_1/MikroC/main.c"
+unsigned char display_mode[10] = {0b11111100,
+ 0b01100001,
+ 0b11011010,
+ 0b11110011,
+ 0b01100110,
+ 0b10110111,
+ 0b10111110,
+ 0b11100001,
+ 0b11111110,
+ 0b11110111};
 
 count_mode_t current_mode = FAST_CNT;
 
 led_mode_t led_current_mode = LED_OFF;
+
+int counter = 0;
 
 static const unsigned int tmr0_load_values[2][2] = {{ 0xc2 ,
   0xf7 },
@@ -37,6 +50,8 @@ void Int0_Interrupt() iv 0x00008 ics ICS_AUTO {
 }
 
 void Timer0_Interrupt() iv 0x000018 ics ICS_AUTO {
+ counter++;
+ LATD = display_mode[counter];
  if (led_current_mode == LED_ON)
  {
  led_current_mode = LED_OFF;
@@ -61,12 +76,25 @@ void load_tmr0(count_mode_t mode)
 }
 
 void main() {
+ ANSELA = 0;
  ANSELB = 0;
  ANSELC = 0;
- RC0_bit = 0;
- LATC0_bit = 0;
- RB0_bit = 1;
- RB1_bit = 1;
+ ANSELD = 0;
+
+
+
+ TRISA = 0;
+ TRISD = 0;
+ TRISC = 0;
+ TRISB.b0 = 1;
+ TRISB.b1 = 1;
+
+
+ LATA.b0 = 1;
+ LATA.b1 = 0;
+ LATA.b2 = 0;
+ LATA.b3 = 0;
+
  load_tmr0(current_mode);
  T0CON = 0x86;
  IPEN_bit = 1;
@@ -77,5 +105,6 @@ void main() {
  RBPU_bit = 0;
  TMR0IP_bit = 0;
  INT1IP_bit = 1;
+ LATD = display_mode[counter];
  while (1) {}
 }

@@ -543,6 +543,7 @@ cmp2md
 cmp2md_bit
 comfrem
 compare_double
+counter
 cren
 cren_bit
 cren_rc1sta_bit
@@ -660,6 +661,7 @@ delay_cyc
 dhen
 dhen_bit
 dhen_ssp1con3_bit
+display_mode
 div_16x16_s
 div_16x16_s_l
 div_16x16_u
