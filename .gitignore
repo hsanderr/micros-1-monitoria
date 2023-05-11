@@ -1,1 +1,4 @@
-Material_Ref/
+**/src/*
+!**/src/*.c
+!**/src/*.h
+!**/src/*.mcppi
