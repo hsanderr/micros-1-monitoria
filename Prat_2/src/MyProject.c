@@ -159,8 +159,6 @@ void main()
   WPUB3_bit = 1;
   RBPU_bit = 0;
 
-  nota = 0;
-
   T0CON = 0x08; // timer 0 no modo 16 bits e sem presclaer
   IPEN_bit = 1;  // habilita niveis de prioridade
   GIEH_bit = 1; // habilita interrupcoes de alta prioridade
@@ -253,17 +251,16 @@ void main()
     }
     if (nota_anterior != nota)
     {
-      switch (nota)
+      if (nota == NENHUMA)
       {
-        case NENHUMA:
-          TMR0ON_bit = 0;
-          LATC.b2 = 0;
-          saida_buzzer = 0;
-          break;
-        default:
-          load_tmr0(nota);
-          TMR0ON_bit = 1;
-          break;
+        TMR0ON_bit = 0;
+        LATC.b2 = 0;
+        saida_buzzer = 0;
+      }
+      else
+      {
+        load_tmr0(nota);
+        TMR0ON_bit = 1;
       }
     }
     if (inverter_saida_buzzer)
@@ -280,6 +277,7 @@ void main()
         saida_buzzer = 1;
         inverter_saida_buzzer = 0;
       }
+      load_tmr0(nota);
     }
   }
 }
