@@ -28,6 +28,8 @@
 
   Van = Vb * Vrefp / (2^n - 1)
   Vb = Van * (2^n - 1) / Vrefp
+  
+  Se não funcionar, configurar registradores PVCFG, NVCFG e FVRS
 
 */
 
@@ -35,8 +37,11 @@
 #define ADC_TCHANNEL 6
 #define START_DELAY_MS 3000
 #define LOOP_DELAY_MS 3000
-#define VREFP 4.096
+#define VREFP 1.024
 #define TWO_POWER_TEN 1024
+
+// T = a * V => a = T / V = 1 / (10 * 10^(-3)) = 100 ºC / V
+#define LINEAR_COEF 100
 
 unsigned int ad_voltage;
 unsigned int ad_temp;
@@ -65,42 +70,45 @@ char temp_txt[17] = {0};
 
 void main() {
   ANSELA = 0x01;             // Configure RA0 pin as analog
-  ANSELE = 0x02;
+  ANSELE = 0x02;             // Configure RE1 pin as digital
   ANSELB = 0x00;             // Configure RB pins as digital
-  TRISA = 0x01;              // Configure RA0 pin as output
-  TRISE = 0x02;
+  TRISA = 0x01;              // Configure RA0 pin as input
+  TRISE = 0x02;              // Configure RE1 pin as input
   TRISB = 0x00;              // Configure RB pins as output
 //  ADFM_bit = 1;              // Right justified
-  ADC_Init_Advanced(_ADC_INTERNAL_VREFL | _ADC_INTERNAL_FVRH4);
+
+  ADC_Init_Advanced(_ADC_INTERNAL_VREFL | _ADC_INTERNAL_FVRH1);
   LCD_Init();
-  // Clear Lcd display:
   Lcd_Cmd(_LCD_CLEAR);
-  Lcd_Cmd(_LCD_CURSOR_OFF);          // Cursor off
+  Lcd_Cmd(_LCD_CURSOR_OFF);
   LCD_Out(1,1,"Prática 3...");
-  
   delay_ms(START_DELAY_MS);
   while(1)
   {
     if (use_get_sample)
     {
-      Lcd_Cmd(_LCD_CURSOR_OFF);
+      Lcd_Cmd(_LCD_CLEAR);
       LCD_Out(1,1,"ADC_Get_Sample");
       ad_voltage = ADC_Get_Sample(ADC_VCHANNEL);
-      ad_voltage_an = ad_voltage * TWO_POWER_TEN / VREFP;
+      ad_voltage_an = ad_voltage * VREFP / (TWO_POWER_TEN - 1);
       ad_temp = ADC_Get_Sample(ADC_TCHANNEL);
+      ad_temp_an = LINEAR_COEF * ad_temp * VREFP / (TWO_POWER_TEN - 1);
       use_get_sample = 0;
     }
     else
     {
-      Lcd_Cmd(_LCD_CURSOR_OFF);
+      Lcd_Cmd(_LCD_CLEAR);
       LCD_Out(1,1,"ADC_Read");
       ad_voltage = ADC_Read(ADC_VCHANNEL);
+      ad_voltage_an = ad_voltage * (TWO_POWER_TEN - 1) / VREFP;
       ad_temp = ADC_Read(ADC_TCHANNEL);
+      ad_temp_an = LINEAR_COEF * ad_temp;
       use_get_sample = 1;
     }
     delay_ms(1000);
-    Lcd_Cmd(_LCD_CURSOR_OFF);
-    sprintf(voltage_txt, "AN0=%.2f", ad_voltage_an);
+    sprintf(voltage_txt, "AN%d=%.2fV", ADC_VCHANNEL, ad_voltage_an);
+    sprintf(temp_txt, "AN%d=%.1fºC", ADC_TCHANNEL, ad_voltage_an);
+    Lcd_Cmd(_LCD_CLEAR);
     LCD_Out(1,1,voltage_txt);
     delay_ms(LOOP_DELAY_MS);
   }
