@@ -81,31 +81,31 @@ void main() {
   while(1)
   {
 
-    if (RB0_bit) {                    // button on RB0 pressed
+    if (RB0_bit == 0) {                    // button on RB0 pressed
       PWM1_Set_Duty(PWM_DUTY_CYCLE_0);
       Lcd_Cmd(_LCD_CLEAR);
       LCD_Out(1,1,"Duty cycle = 0%%");
     }
 
-    if (RB1_bit) {                    // button on RB1 pressed
+    if (RB1_bit == 0) {                    // button on RB1 pressed
       PWM1_Set_Duty(PWM_DUTY_CYCLE_25);
       Lcd_Cmd(_LCD_CLEAR);
       LCD_Out(1,1,"Duty cycle = 25%%");
     }
 
-    if (RB2_bit) {                    // button on RB2 pressed
+    if (RB2_bit == 0) {                    // button on RB2 pressed
       PWM2_Set_Duty(PWM_DUTY_CYCLE_50);
       Lcd_Cmd(_LCD_CLEAR);
       LCD_Out(1,1,"Duty cycle = 50%%");
     }
 
-    if (RB3_bit) {                    // button on RB3 pressed
+    if (RB3_bit == 0) {                    // button on RB3 pressed
       PWM2_Set_Duty(PWM_DUTY_CYCLE_75);
       Lcd_Cmd(_LCD_CLEAR);
       LCD_Out(1,1,"Duty cycle = 75%%");
     }
     
-    if (RB4_bit) {                    // button on RB4 pressed
+    if (RB4_bit == 0) {                    // button on RB4 pressed
       PWM2_Set_Duty(PWM_DUTY_CYCLE_100);
       Lcd_Cmd(_LCD_CLEAR);
       LCD_Out(1,1,"Duty cycle = 100%%");
